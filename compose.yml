@@ -1,0 +1,29 @@
+services:
+  web:
+    image: nginx:latest
+    ports:
+      - 80:80
+    volumes:
+      - ./nginx/conf.d/:/etc/nginx/conf.d/
+      - ./public/:/var/www/public/
+      - ./upload/image/:/var/www/upload/image/
+    depends_on:
+      - php
+
+  php:
+    build: .
+    volumes:
+      - ./public/:/var/www/public/
+      - ./upload/image/:/var/www/upload/image/
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_DATABASE: example_db
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    volumes:
+      - ./mysql_data:/var/lib/mysql
+    ports:
+      - 3306:3306
